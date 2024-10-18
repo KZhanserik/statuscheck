@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLrwgBEwp6YJ5GTkCEKcgYnVbexhX7HSc",
+      authDomain: "assignment-169eb.firebaseapp.com",
+      projectId: "assignment-169eb",
+      storageBucket: "assignment-169eb.appspot.com",
+      messagingSenderId: "122554567005",
+      appId: "1:122554567005:web:e9cae393e1b290ab98c0b4",
+      measurementId: "G-D7D80VSM8J"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="UTF-8">
+  <title>Admin Page</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div>
+    <h1>Admin Page</h1>
+    <form id="adminForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="text" id="contract" placeholder="Договор">
+      <input type="text" id="vkk" placeholder="ВКК">
+      <input type="text" id="conclusion" placeholder="Заключение">
+      <input type="text" id="payment" placeholder="Ожидание оплаты">
+      <button type="submit">Add/Update</button>
+    </form>
+    <a href="admin_table.html">View All User Data</a>
+  </div>
+  <script src="js/script.js"></script>
+  
+</body>
+</html>
