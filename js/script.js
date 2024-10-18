@@ -13,12 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const conclusion = document.getElementById('conclusion').value || '';
       const payment = document.getElementById('payment').value || '';
 
-      const userData = { contract, vkk, conclusion, payment };
+      const userData = { username, contract, vkk, conclusion, payment };
 
-      await db.collection('users').doc(username).set(userData);
+      const { data, error } = await supabase
+        .from('users')
+        .upsert(userData);
 
-      adminForm.reset();
-      alert('User information updated!');
+      if (error) {
+        console.error('Error updating user data:', error);
+      } else {
+        adminForm.reset();
+        alert('User information updated!');
+      }
     });
   }
 
@@ -27,18 +33,23 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const username = document.getElementById('username').value;
 
-      const doc = await db.collection('users').doc(username).get();
-      if (doc.exists) {
-        const userData = doc.data();
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user data:', error);
+        statusDisplay.innerHTML = `<p>No data found for ${username}</p>`;
+      } else {
         statusDisplay.innerHTML = `<h2>Status for ${username}</h2>`;
         statusDisplay.innerHTML += `
-          <p>Договор: ${userData.contract}</p>
-          <p>ВКК: ${userData.vkk}</p>
-          <p>Заключение: ${userData.conclusion}</p>
-          <p>Ожидание оплаты: ${userData.payment}</p>
+          <p>Договор: ${data.contract}</p>
+          <p>ВКК: ${data.vkk}</p>
+          <p>Заключение: ${data.conclusion}</p>
+          <p>Ожидание оплаты: ${data.payment}</p>
         `;
-      } else {
-        statusDisplay.innerHTML = `<p>No data found for ${username}</p>`;
       }
     });
   }
@@ -48,19 +59,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const tbody = dataTable.querySelector('tbody');
       tbody.innerHTML = ''; // Clear existing data
 
-      const snapshot = await db.collection('users').get();
-      snapshot.forEach(doc => {
-        const userData = doc.data();
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${doc.id}</td>
-          <td>${userData.contract}</td>
-          <td>${userData.vkk}</td>
-          <td>${userData.conclusion}</td>
-          <td>${userData.payment}</td>
-        `;
-        tbody.appendChild(row);
-      });
+      const { data, error } = await supabase
+        .from('users')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching user data:', error);
+      } else {
+        data.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.username}</td>
+            <td>${user.contract}</td>
+            <td>${user.vkk}</td>
+            <td>${user.conclusion}</td>
+            <td>${user.payment}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
     };
 
     loadTableData(); // Call the async function to load data
